@@ -1,10 +1,10 @@
 {
   "name": "nu-reference-storage-service-express",
   "version": "1.0.0",
-  "description": "Network Update Reference Storage Service using Node Express Server",
-  "main": "app.ts",
+  "description": "Network Update Reference Storage Service using Node Express Server with Typescript",
+  "main": "src/app.ts",
   "scripts": {
-    "serve": "nodemon app.ts",
+    "serve": "nodemon src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "General Electric Company",

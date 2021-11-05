@@ -1,4 +1,6 @@
-# nu-reference-storage-service-express
+# Network Update Reference Storage Service - Node.js
+
+Example storage service with but Node.js, Express, and TypeScript.
 
 ## Build & Run
 
