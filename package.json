@@ -1,7 +1,7 @@
 {
-  "name": "nu-reference-storage-service-express",
+  "name": "nu-reference-storage-service-node",
   "version": "1.0.0",
-  "description": "Network Update Reference Storage Service using Node Express Server with Typescript",
+  "description": "Network Update Reference Storage Service using Node.js Express Server with Typescript",
   "main": "src/app.ts",
   "scripts": {
     "serve": "nodemon src/app.ts",
@@ -10,8 +10,11 @@
   "author": "General Electric Company",
   "license": "",
   "dependencies": {
+    "@types/mime-types": "^2.1.1",
     "@types/uuid": "^8.3.1",
     "express": "^4.17.1",
+    "http-status-codes": "^2.1.4",
+    "mime-types": "^2.1.33",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

@@ -1,7 +1,9 @@
 import express, {Application, Request, Response} from 'express';
 import {v1} from 'uuid';
 import fs from 'fs';
-import {ErrorDto} from "./error.dto";
+import {ErrorDto} from './error.dto';
+import {StatusCodes} from 'http-status-codes';
+import mime from 'mime';
 
 const app: Application = express();
 
@@ -17,28 +19,16 @@ app.listen(port, () => {
  * Simple status API to quickly check if your service is up and running.
  */
 app.get('/v1/status', (request: Request, response: Response) => {
-  response.status(200).json({
+  response.status(StatusCodes.OK).json({
     name: 'Network Update Reference Storage Service',
     status: 'Running'
   });
 });
 
-app.get('/v1/error', (request: Request, response: Response) => {
-  const error: ErrorDto = {
-    errorCode: 'test-001',
-    statusCode: 500,
-    errors: ['Something unexpected happened', 'Another thing happened too'],
-  };
-
-  response.status(200).json(error);
-});
-
-// TODO: 11/5/21 do we need to consider any encode/decode on the urn
-
 /**
  * POST /v1/files?type=image&featureId={id}
  */
-app.post('/v1/files', (request: Request, response: Response) => {
+app.post('/v1/files', async (request: Request, response: Response) => {
 
   try {
 
@@ -46,25 +36,25 @@ app.post('/v1/files', (request: Request, response: Response) => {
 
     const queryParams = request.query;
 
-    if (!queryParams) {
-      return response.status(400).json(badRequestError('Required query params: type, featureId'));
+    if (queryParams === undefined) {
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('Required query params: type, featureId'));
     }
 
     const typeQueryParam = queryParams.type;
     if (!isString(typeQueryParam) || (typeQueryParam as string).trim() === '') {
-      return response.status(400).json(badRequestError('type is required query param'));
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('type is required query param'));
     }
 
     const featureIdQueryParam = queryParams.featureId;
     if (!isString(featureIdQueryParam) || (featureIdQueryParam as string).trim() === '') {
-      return response.status(400).json(badRequestError('featureId is required query param'));
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('featureId is required query param'));
     }
 
     // Validate there is image data
 
     const rawFile: Buffer = request.body;
-    if (!rawFile || rawFile.length === 0) {
-      return response.status(400).json(badRequestError('No file found'));
+    if (rawFile === undefined || rawFile.length === 0) {
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('No file found'));
     }
     console.log({rawFile});
 
@@ -73,34 +63,30 @@ app.post('/v1/files', (request: Request, response: Response) => {
     const contentType = request.header('Content-Type');
     console.log({contentType});
     if (contentType === undefined) {
-      return response.status(400).json(badRequestError('Content-Type header is required'));
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('Content-Type header is required'));
     }
 
-    // TODO: 11/5/21 look here
-    if (!contentType.startsWith('image/')) {
-      return response.status(400).json(badRequestError("Content-Type not supported.  Supported content types: 'image/*'"))
+    if (!request.is('image/*')) {
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError(`Content-Type '${contentType}' not supported.  Supported content types: image/*`))
     }
 
     // Generate filename
 
-    const fileExt = contentType.split('/')[1];
-    const filename = `image-${featureIdQueryParam}-${v1()}.${fileExt}`;
+    const filename = `${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
 
     // Write image to file
 
-    fs.writeFile(filename, rawFile, (err) => {
-      if (err) return console.error(err)
-      console.log('file saved to ', filename);
-    });
+    await fs.promises.writeFile(filename, rawFile);
+    console.log(`File saved to ${filename}`);
 
     // Return url as response
 
-    const responseJson = {filePath: `${filename}`};
-    response.json(responseJson);
-    console.log(responseJson);
+    response.json({
+      filePath: `${filename}`
+    });
 
   } catch (e) {
-    response.status(500).json(internalServerError(e.message));
+    response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalServerError(e.message));
   }
 });
 
@@ -110,14 +96,14 @@ function isString(value): boolean {
 
 function internalServerError(message: string): ErrorDto {
   return {
-    statusCode: 500,
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     errors: [message],
   };
 }
 
 function badRequestError(message: string): ErrorDto {
   return {
-    statusCode: 400,
+    statusCode: StatusCodes.BAD_REQUEST,
     errors: [message],
   };
 }
