@@ -1,4 +1,4 @@
-import express, {Application, Request, Response} from 'express'
+import express, {Application, Request, Response} from 'express';
 import {v1} from 'uuid';
 import fs from 'fs';
 import {ErrorDto} from "./error.dto";
@@ -27,12 +27,13 @@ app.get('/v1/error', (request: Request, response: Response) => {
   const error: ErrorDto = {
     errorCode: 'test-001',
     statusCode: 500,
-    error: 'Internal Server Error',
-    message: ['Something unexpected happened', 'Another thing happened too'],
+    errors: ['Something unexpected happened', 'Another thing happened too'],
   };
 
   response.status(200).json(error);
 });
+
+// TODO: 11/5/21 do we need to consider any encode/decode on the urn
 
 /**
  * POST /v1/files?type=image&featureId={id}
@@ -74,6 +75,8 @@ app.post('/v1/files', (request: Request, response: Response) => {
     if (contentType === undefined) {
       return response.status(400).json(badRequestError('Content-Type header is required'));
     }
+
+    // TODO: 11/5/21 look here
     if (!contentType.startsWith('image/')) {
       return response.status(400).json(badRequestError("Content-Type not supported.  Supported content types: 'image/*'"))
     }
@@ -108,16 +111,14 @@ function isString(value): boolean {
 function internalServerError(message: string): ErrorDto {
   return {
     statusCode: 500,
-    error: 'Internal Server Error',
-    message: [message],
+    errors: [message],
   };
 }
 
 function badRequestError(message: string): ErrorDto {
   return {
     statusCode: 400,
-    error: 'Bad Request',
-    message: [message],
+    errors: [message],
   };
 }
 
