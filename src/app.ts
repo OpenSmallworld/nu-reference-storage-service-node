@@ -1,7 +1,7 @@
 import express, {Application, Request, Response} from 'express';
 import {v1} from 'uuid';
 import fs from 'fs';
-import {ErrorDto} from './error.dto';
+import {ErrorResponseDto} from './error-response.dto';
 import {StatusCodes} from 'http-status-codes';
 import mime from 'mime';
 
@@ -94,14 +94,14 @@ function isString(value): boolean {
   return typeof value === 'string' || value instanceof String;
 }
 
-function internalServerError(message: string): ErrorDto {
+function internalServerError(message: string): ErrorResponseDto {
   return {
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     errors: [message],
   };
 }
 
-function badRequestError(message: string): ErrorDto {
+function badRequestError(message: string): ErrorResponseDto {
   return {
     statusCode: StatusCodes.BAD_REQUEST,
     errors: [message],

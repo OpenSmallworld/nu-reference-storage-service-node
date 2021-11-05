@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "Network Update Reference Storage Service using Node.js Express Server with Typescript",
   "main": "src/app.ts",
+  "type": "commonjs",
   "scripts": {
     "serve": "nodemon src/app.ts",
+    "start": "ts-node ./src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "General Electric Company",
-  "license": "",
+  "license": "Apache-2.0",
   "dependencies": {
     "@types/mime-types": "^2.1.1",
     "@types/uuid": "^8.3.1",

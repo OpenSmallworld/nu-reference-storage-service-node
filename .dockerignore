@@ -1,0 +1,8 @@
+# Default ignore
+**
+
+# Docker whitelist
+!/config/**
+!/dist/**
+!/node_modules/**
+!*.sh
