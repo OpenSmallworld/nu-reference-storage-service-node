@@ -16,6 +16,7 @@ app.listen(port, () => {
 });
 
 /**
+ * GET /v1/status
  * Simple status API to quickly check if your service is up and running.
  */
 app.get('/v1/status', (request: Request, response: Response) => {
@@ -26,7 +27,11 @@ app.get('/v1/status', (request: Request, response: Response) => {
 });
 
 /**
- * POST /v1/files?type=image&featureId={id}
+ * POST /v1/files
+ * Query Params:
+ *   type=image -- Required
+ *   featureId={id} -- Required
+ * Accepts: image/*
  */
 app.post('/v1/files', async (request: Request, response: Response) => {
 
@@ -76,9 +81,16 @@ app.post('/v1/files', async (request: Request, response: Response) => {
 
     // Generate filename
 
-    const filename = `${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
+    const filename = `${__dirname}\${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
 
     // Write image to file
+
+    let debugInfo = {
+      dirName: __dirname,
+      cwd: process.cwd(),
+    }
+
+    console.log(debugInfo);
 
     await fs.promises.writeFile(filename, rawFile);
     console.log(`File saved to ${filename}`);
