@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ts-node ./src/app.ts
+ts-node ./src/app.js

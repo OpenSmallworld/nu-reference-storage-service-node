@@ -5,8 +5,9 @@
   "main": "src/app.ts",
   "type": "commonjs",
   "scripts": {
-    "serve": "nodemon src/app.ts",
-    "start": "ts-node ./src/app.ts",
+    "dev": "nodemon src/app.ts",
+    "build": "tsc",
+    "start": "node ./dist/app.js",
     "test": "echo \"Warn: no test specified\""
   },
   "author": "General Electric Company",
