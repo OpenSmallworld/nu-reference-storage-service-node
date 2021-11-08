@@ -81,11 +81,12 @@ app.post('/v1/files', async (request: Request, response: Response) => {
 
     // Generate filename
 
-    const filename = `${__dirname}\${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
+    const filename = `${__dirname}/${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
 
     // Write image to file
 
     let debugInfo = {
+      filename: filename,
       dirName: __dirname,
       cwd: process.cwd(),
     }
