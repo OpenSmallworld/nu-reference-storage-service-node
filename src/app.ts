@@ -45,6 +45,10 @@ app.post('/v1/files', async (request: Request, response: Response) => {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('type is required query param'));
     }
 
+    if ((typeQueryParam as string).trim().toLowerCase() !== 'image') {
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError(`Supported values for 'type': image`));
+    }
+
     const featureIdQueryParam = queryParams.featureId;
     if (!isString(featureIdQueryParam) || (featureIdQueryParam as string).trim() === '') {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('featureId is required query param'));
