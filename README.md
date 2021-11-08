@@ -6,6 +6,10 @@ Example storage service with but Node.js, Express, and TypeScript.
 
 `npm ci`
 
+### (Optional) Run with debug logs
+
+To enable debug logging, set the following env var prior to running the app.
+
 Optionally to run with debug options:
 
 `export DEBUG="express:* node index.js"`
@@ -20,12 +24,13 @@ then
 
 ### Run in dev mode
 
-Then to start the app in dev mode with hot reloading:
+To start the app with hot reloading:
 
 `npm run dev`
 
+### Default config
 
-By default, runs on port 4001, with a full path of `http://localhost:4001`
+By default, runs on port 4000, with a full path of `http://localhost:4000`
 
 ## APIs
 
