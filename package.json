@@ -5,6 +5,7 @@
   "main": "src/app.ts",
   "type": "commonjs",
   "scripts": {
+    "audit:ci": "audit-ci --config ./audit-ci.json",
     "dev": "nodemon src/app.ts",
     "build": "tsc",
     "start": "node ./dist/app.js",
@@ -15,6 +16,7 @@
   "dependencies": {
     "@types/mime-types": "^2.1.1",
     "@types/uuid": "^8.3.1",
+    "audit-ci": "^5.1.2",
     "express": "^4.17.1",
     "http-status-codes": "^2.1.4",
     "mime-types": "^2.1.33",
