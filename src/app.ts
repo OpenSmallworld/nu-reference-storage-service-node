@@ -8,18 +8,20 @@ import mime from 'mime';
 const app: Application = express();
 
 const port = process.env.PORT || 4000;
+const basePath = process.env.BASE_PATH || 'nu-storage';
 
 app.use(express.raw({type: 'image/*', limit: '1gb'}));
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
+  console.log(`Configured basePath: ${basePath}`);
 });
 
 /**
  * GET /v1/status
  * Simple status API to quickly check if your service is up and running.
  */
-app.get('/v1/status', (request: Request, response: Response) => {
+app.get(`/${basePath}/v1/status`, (request: Request, response: Response) => {
   response.status(StatusCodes.OK).json({
     name: 'Network Update Reference Storage Service',
     status: 'Running'
@@ -33,7 +35,7 @@ app.get('/v1/status', (request: Request, response: Response) => {
  *   featureId={id} -- Required
  * Accepts: image/*
  */
-app.post('/v1/files', async (request: Request, response: Response) => {
+app.post(`/${basePath}/v1/files`, async (request: Request, response: Response) => {
 
   try {
 
