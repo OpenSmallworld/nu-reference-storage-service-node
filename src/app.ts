@@ -81,14 +81,20 @@ app.post('/v1/files', async (request: Request, response: Response) => {
 
     // Generate filename
 
-    const filename = `${__dirname}/${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
+    const fileDirectory = `${__dirname}/${typeQueryParam}`;
+
+    if (!fs.existsSync(fileDirectory)) {
+      await fs.promises.mkdir(fileDirectory);
+    }
+
+    const filename = `${fileDirectory}/${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
 
     // Write image to file
 
     let debugInfo = {
+      fileDirectory: fileDirectory,
       filename: filename,
       dirName: __dirname,
-      cwd: process.cwd(),
     }
 
     console.log(debugInfo);
