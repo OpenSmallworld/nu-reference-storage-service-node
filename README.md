@@ -50,6 +50,7 @@ For example, http://localhost:4000/nu-storage/v1/status
 ### Save a file
 
 `POST <storage base path>/v1/files?type=image&featureId={id}`
+
 `Accepts: image/*`
 
 For example, http://localhost:4000/nu-storage/v1/files?type=image&featureId=xxxxxx
@@ -63,9 +64,11 @@ For example, http://localhost:4000/nu-storage/v1/files?type=image&featureId=xxxx
 
 #### Response Statuses
 
-`201 Created` - If file is saved successfully
-`400 Bad Request` - If any part of the request is invalid, for example if the query params or file data is missing
-`500 Internal Server Error` - unexpected exception occurred
+| HTTP Status | Description |
+| ----------- | ----------- |
+| `201 Created` | If file is saved successfully |
+| `400 Bad Request` | If any part of the request is invalid, for example if the query params or file data is missing |
+| `500 Internal Server Error` | Unexpected exception occurred |
 
 #### Response Body
 
