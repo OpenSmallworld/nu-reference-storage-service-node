@@ -6,6 +6,20 @@ Example storage service with but Node.js, Express, and TypeScript.
 
 `npm ci`
 
+then
+
+`npm run build`
+
+## Run in prod mode
+
+`npm run start`
+
+## Run in dev mode
+
+To start the app with hot reloading:
+
+`npm run dev`
+
 ## Config
 
 ### Environment Vars
@@ -24,20 +38,6 @@ To enable debug logging, set the following env var prior to running the app.
 Optionally to run with debug options:
 
 `export DEBUG="express:* node index.js"`
-
-## Run in prod mode
-
-`npm run build`
-
-then
-
-`npm run start`
-
-## Run in dev mode
-
-To start the app with hot reloading:
-
-`npm run dev`
 
 ## APIs
 
