@@ -31,9 +31,7 @@ app.get('/v1/status', (request: Request, response: Response) => {
 app.post('/v1/files', async (request: Request, response: Response) => {
 
   try {
-
     // Validate query params
-
     const queryParams = request.query;
 
     if (queryParams === undefined) {
@@ -54,16 +52,7 @@ app.post('/v1/files', async (request: Request, response: Response) => {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('featureId is required query param'));
     }
 
-    // Validate there is image data
-
-    const rawFile: Buffer = request.body;
-    if (rawFile === undefined || rawFile.length === 0) {
-      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('No file found'));
-    }
-    console.log({rawFile});
-
     // Validate the Content-Type
-
     const contentType = request.header('Content-Type');
     console.log({contentType});
     if (contentType === undefined) {
@@ -74,17 +63,21 @@ app.post('/v1/files', async (request: Request, response: Response) => {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError(`Content-Type '${contentType}' not supported.  Supported content types: image/*`))
     }
 
-    // Generate filename
+    // Validate there is image data
+    const rawFile: Buffer = request.body;
+    if (rawFile === undefined || !rawFile.length) {
+      return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('No file found'));
+    }
+    console.log({rawFile});
 
+    // Generate filename
     const filename = `${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
 
     // Write image to file
-
     await fs.promises.writeFile(filename, rawFile);
     console.log(`File saved to ${filename}`);
 
     // Return url as response
-
     response.json({
       filePath: `${filename}`
     });
@@ -111,4 +104,6 @@ function badRequestError(message: string): ErrorResponseDto {
     errors: [message],
   };
 }
+
+export default app;
 
