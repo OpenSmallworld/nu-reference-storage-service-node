@@ -43,3 +43,7 @@ yarn-error.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Saved files
+/src/image/
+

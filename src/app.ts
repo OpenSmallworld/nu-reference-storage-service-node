@@ -8,17 +8,20 @@ import mime from 'mime';
 const app: Application = express();
 
 const port = process.env.PORT || 4000;
+const basePath = process.env.STORAGE_BASE_PATH || 'nu-storage';
 
 app.use(express.raw({type: 'image/*', limit: '1gb'}));
 
 app.listen(port, () => {
-  console.log(`App is listening on port ${port}`);
+  console.log(`App is listening on port: ${port}`);
+  console.log(`Configured base path: ${basePath}`);
 });
 
 /**
+ * GET <storage base path>/v1/status
  * Simple status API to quickly check if your service is up and running.
  */
-app.get('/v1/status', (request: Request, response: Response) => {
+app.get(`/${basePath}/v1/status`, (request: Request, response: Response) => {
   response.status(StatusCodes.OK).json({
     name: 'Network Update Reference Storage Service',
     status: 'Running'
@@ -26,9 +29,14 @@ app.get('/v1/status', (request: Request, response: Response) => {
 });
 
 /**
- * POST /v1/files?type=image&featureId={id}
+ * POST <storage base path>/v1/files
+ * Query Params:
+ *   type=image -- Required
+ *   featureId={id} -- Required
+ * Accepts: image/*
  */
-app.post('/v1/files', async (request: Request, response: Response) => {
+app.post(`/${basePath}/v1/files`, async (request: Request, response: Response) => {
+  console.log('Received save file request');
 
   try {
     // Validate query params
@@ -39,7 +47,7 @@ app.post('/v1/files', async (request: Request, response: Response) => {
     }
 
     const typeQueryParam = queryParams.type;
-    if (!isString(typeQueryParam) || (typeQueryParam as string).trim() === '') {
+    if (typeQueryParam === undefined || !isString(typeQueryParam) || (typeQueryParam as string).trim() === '') {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('type is required query param'));
     }
 
@@ -48,13 +56,14 @@ app.post('/v1/files', async (request: Request, response: Response) => {
     }
 
     const featureIdQueryParam = queryParams.featureId;
-    if (!isString(featureIdQueryParam) || (featureIdQueryParam as string).trim() === '') {
+    if (featureIdQueryParam === undefined || !isString(featureIdQueryParam) || (featureIdQueryParam as string).trim() === '') {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('featureId is required query param'));
     }
 
     // Validate the Content-Type
+
     const contentType = request.header('Content-Type');
-    console.log({contentType});
+    console.debug({contentType});
     if (contentType === undefined) {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('Content-Type header is required'));
     }
@@ -64,16 +73,39 @@ app.post('/v1/files', async (request: Request, response: Response) => {
     }
 
     // Validate there is image data
+
     const rawFile: Buffer = request.body;
     if (rawFile === undefined || !rawFile.length) {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('No file found'));
     }
-    console.log({rawFile});
+    console.debug({rawFile});
 
-    // Generate filename
-    const filename = `${typeQueryParam}-${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
+    // Generate filename for image
+
+    const fileDirectory = `${__dirname}/${typeQueryParam}`;
+
+    if (!fs.existsSync(fileDirectory)) {
+      await fs.promises.mkdir(fileDirectory);
+    }
+
+    const filename = `${fileDirectory}/${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
 
     // Write image to file
+
+    /*
+    THIS IS NOT PRODUCTION READY CODE.
+    THIS IS A SIMPLE DEMO EXAMPLE WHICH SAVES TO TEMPORARY NON-PERSISTENT CONTAINER STORAGE.
+    REPLACE THIS CODE WITH YOUR PRODUCTION READY REQUIREMENTS
+     */
+
+    let debugInfo = {
+      fileDirectory: fileDirectory,
+      filename: filename,
+      dirName: __dirname,
+    }
+
+    console.debug(debugInfo);
+
     await fs.promises.writeFile(filename, rawFile);
     console.log(`File saved to ${filename}`);
 
