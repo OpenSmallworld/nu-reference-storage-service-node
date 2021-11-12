@@ -110,7 +110,8 @@ app.post(`/${basePath}/v1/files`, async (request: Request, response: Response) =
     console.log(`File saved to ${filename}`);
 
     // Return url as response
-    response.json({
+    response.status(StatusCodes.CREATED)
+    .json({
       filePath: `${filename}`
     });
 

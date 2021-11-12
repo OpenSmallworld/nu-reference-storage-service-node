@@ -78,7 +78,7 @@ describe('Storage service API tests', () => {
       expect(response.body.errors[0]).to.equal('No file found');
     });
 
-    it('should successfully save image file', async () => {
+    it('should successfully save image file and return Created', async () => {
       const filePath = `${__dirname}/test-files/test-file.png`;
       const fileBuffer = await fs.readFileSync(filePath);
 
@@ -86,7 +86,7 @@ describe('Storage service API tests', () => {
         type: 'image',
         featureId: 'an-id'
       }).send(fileBuffer).set('Content-Type', 'image/png');
-      expect(response.status).to.equal(StatusCodes.OK);
+      expect(response.status).to.equal(StatusCodes.CREATED);
       expect(response.body.filePath).is.not.null;
     });
 
