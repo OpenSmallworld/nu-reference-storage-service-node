@@ -20,6 +20,11 @@ To start the app with hot reloading:
 
 `npm run dev`
 
+
+## Run Tests
+
+`npm run test`
+
 ## Config
 
 ### Environment Vars
