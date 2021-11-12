@@ -14,7 +14,6 @@ npmBuildPipeline({
   crossPublishDockerImage = true
   securityAudit = false
   sonarScan = false
-  unitTest = false
   lint = false
   ossLicenceCheck = false
 })
