@@ -5,6 +5,7 @@ import {ErrorResponseDto} from './error-response.dto';
 import {StatusCodes} from 'http-status-codes';
 import mime from 'mime';
 import querystring from 'querystring';
+import morgan from 'morgan';
 
 const app: Application = express();
 
@@ -15,10 +16,10 @@ const readFileBaseUrl = process.env.READ_FILE_BASE_URL || `http://localhost:${po
 const fileSizeLimit = process.env.FILE_SIZE_LIMIT || '1gb';
 
 app.use(express.raw({type: 'image/*', limit: fileSizeLimit}));
+app.use(morgan('dev'));
 
 app.listen(port, () => {
-  console.log(`App is listening on port: ${port}`);
-  console.log(`App configuration:`);
+  console.log(`Network Update Reference Storage Service running with configuration:`);
   console.log({
     PORT: port,
     STORAGE_BASE_PATH: apiBasePath,
@@ -47,8 +48,6 @@ app.get(`/${apiBasePath}/v1/status`, (request: Request, response: Response) => {
  * Accepts: image/*
  */
 app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response) => {
-  console.log('Received save file request');
-
   try {
     // Validate query params
     const queryParams = request.query;
@@ -74,7 +73,6 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
     // Validate the Content-Type
 
     const contentType = request.header('Content-Type');
-    console.debug({contentType});
     if (contentType === undefined) {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('Content-Type header is required'));
     }
@@ -108,13 +106,10 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
     REPLACE THIS CODE WITH YOUR PRODUCTION READY REQUIREMENTS
      */
 
-    let debugInfo = {
+    console.debug({
       fileDirectory: fileDirectory,
       filename: filename,
-      dirName: __dirname,
-    }
-
-    console.debug(debugInfo);
+    });
 
     await fs.promises.writeFile(filename, rawFile);
     console.log(`File saved to ${filename}`);
@@ -122,7 +117,7 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
     // convert save location to accessible url
 
     const fileUrl = `${readFileBaseUrl}/${apiDemoBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
-    console.log({fileUrl});
+    console.log(`Response filePath: ${fileUrl}`);
 
     // Return url as response
     response.status(StatusCodes.CREATED)
@@ -152,8 +147,6 @@ app.get(`/${apiDemoBasePath}/v1/files`, async (request: Request, response: Respo
     return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('filePath is required query param'));
   }
   const filePath = filePathQueryParam as string;
-
-  console.log({filePath});
 
   response.status(StatusCodes.OK).download(filePath);
 });
