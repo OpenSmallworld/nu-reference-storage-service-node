@@ -9,31 +9,34 @@ import morgan from 'morgan';
 
 const app: Application = express();
 
-const port = process.env.PORT || 4000;
-const apiBasePath = process.env.STORAGE_BASE_PATH || 'nu-storage';
-const apiDemoBasePath = process.env.STORAGE_READ_DEMO_BASE_PATH || 'nu-storage-read-demo';
-const readFileBaseUrl = process.env.READ_FILE_BASE_URL || `http://localhost:${port}`;
-const fileSizeLimit = process.env.FILE_SIZE_LIMIT || '1gb';
+const config = {
+   port : process.env.PORT || 4000,
+   storageApiBasePath : process.env.STORAGE_API_BASE_PATH || 'nu-storage',
+   fileSizeLimit : process.env.FILE_SIZE_LIMIT || '1gb',
+  /*
+   * Config specific to the demo only read file api
+   */
+   storageDemoApiBasePath : process.env.STORAGE_DEMO_API_BASE_PATH || 'nu-storage-demo',
+   storageDemoBaseUrl : process.env.STORAGE_DEMO_BASE_URL || `http://localhost:4000`,
+  /**
+   * Options are 'open', or 'attachment'.  Default is 'open'
+   */
+   storageDemoDownloadType : process.env.STORAGE_DEMO_DOWNLOAD_TYPE || 'open'
+}
 
-app.use(express.raw({type: 'image/*', limit: fileSizeLimit}));
+app.use(express.raw({type: 'image/*', limit: config.fileSizeLimit}));
 app.use(morgan('dev'));
 
-app.listen(port, () => {
-  console.log(`Network Update Reference Storage Service running with configuration:`);
-  console.log({
-    PORT: port,
-    STORAGE_BASE_PATH: apiBasePath,
-    STORAGE_READ_DEMO_BASE_PATH: apiDemoBasePath,
-    READ_FILE_BASE_URL: readFileBaseUrl,
-    FILE_SIZE_LIMIT: fileSizeLimit
-  });
+app.listen(config.port, () => {
+  console.log(`Network Update Reference Storage Service is running with configuration:`);
+  console.log(config);
 });
 
 /**
  * GET <storage base path>/v1/status
  * Simple status API to quickly check if your service is up and running.
  */
-app.get(`/${apiBasePath}/v1/status`, (request: Request, response: Response) => {
+app.get(`/${config.storageApiBasePath}/v1/status`, (request: Request, response: Response) => {
   response.status(StatusCodes.OK).json({
     name: 'Network Update Reference Storage Service',
     status: 'Running'
@@ -47,7 +50,7 @@ app.get(`/${apiBasePath}/v1/status`, (request: Request, response: Response) => {
  *   featureId={id} -- Required
  * Accepts: image/*
  */
-app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response) => {
+app.post(`/${config.storageApiBasePath}/v1/files`, async (request: Request, response: Response) => {
   try {
     // Validate query params
     const queryParams = request.query;
@@ -116,7 +119,7 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
 
     // convert save location to accessible url
 
-    const fileUrl = `${readFileBaseUrl}/${apiDemoBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
+    const fileUrl = `${config.storageDemoBaseUrl}/${config.storageDemoApiBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
     console.log(`Response filePath: ${fileUrl}`);
 
     // Return url as response
@@ -133,7 +136,7 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
 /**
  * GET <read storage demo base path>/v1/files?filePath=<filePath>
  */
-app.get(`/${apiDemoBasePath}/v1/files`, async (request: Request, response: Response) => {
+app.get(`/${config.storageDemoApiBasePath}/v1/files`, async (request: Request, response: Response) => {
 
   // Validate query params
   const queryParams = request.query;
@@ -148,7 +151,12 @@ app.get(`/${apiDemoBasePath}/v1/files`, async (request: Request, response: Respo
   }
   const filePath = filePathQueryParam as string;
 
-  response.status(StatusCodes.OK).download(filePath);
+  if (config.storageDemoDownloadType && config.storageDemoDownloadType.toLowerCase() === 'attachment') {
+    response.status(StatusCodes.OK).download(filePath);
+  } else {
+    response.status(StatusCodes.OK).sendFile(filePath);
+  }
+
 });
 
 function isString(value): boolean {
