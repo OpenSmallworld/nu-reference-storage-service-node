@@ -10,6 +10,7 @@ const app: Application = express();
 
 const port = process.env.PORT || 4000;
 const apiBasePath = process.env.STORAGE_BASE_PATH || 'nu-storage';
+const apiDemoBasePath = process.env.STORAGE_READ_DEMO_BASE_PATH || 'nu-storage-read-demo';
 const readFileBaseUrl = process.env.READ_FILE_BASE_URL || `http://localhost:${port}`;
 const fileSizeLimit = process.env.FILE_SIZE_LIMIT || '1gb';
 
@@ -21,6 +22,7 @@ app.listen(port, () => {
   console.log({
     PORT: port,
     STORAGE_BASE_PATH: apiBasePath,
+    STORAGE_READ_DEMO_BASE_PATH: apiDemoBasePath,
     READ_FILE_BASE_URL: readFileBaseUrl,
     FILE_SIZE_LIMIT: fileSizeLimit
   });
@@ -119,7 +121,7 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
 
     // convert save location to accessible url
 
-    const fileUrl = `${readFileBaseUrl}/${apiBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
+    const fileUrl = `${readFileBaseUrl}/${apiDemoBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
     console.log({fileUrl});
 
     // Return url as response
@@ -134,9 +136,9 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
 });
 
 /**
- * GET <storage base path>/v1/files?filePath=<filePath>
+ * GET <read storage demo base path>/v1/files?filePath=<filePath>
  */
-app.get(`/${apiBasePath}/v1/files`, async (request: Request, response: Response) => {
+app.get(`/${apiDemoBasePath}/v1/files`, async (request: Request, response: Response) => {
 
   // Validate query params
   const queryParams = request.query;
