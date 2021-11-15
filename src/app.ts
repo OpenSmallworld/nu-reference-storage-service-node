@@ -4,24 +4,33 @@ import fs from 'fs';
 import {ErrorResponseDto} from './error-response.dto';
 import {StatusCodes} from 'http-status-codes';
 import mime from 'mime';
+import querystring from 'querystring';
 
 const app: Application = express();
 
 const port = process.env.PORT || 4000;
-const basePath = process.env.STORAGE_BASE_PATH || 'nu-storage';
+const apiBasePath = process.env.STORAGE_BASE_PATH || 'nu-storage';
+const readFileBaseUrl = process.env.READ_FILE_BASE_URL || `http://localhost:${port}`;
+const fileSizeLimit = process.env.FILE_SIZE_LIMIT || '1gb';
 
-app.use(express.raw({type: 'image/*', limit: '1gb'}));
+app.use(express.raw({type: 'image/*', limit: fileSizeLimit}));
 
 app.listen(port, () => {
   console.log(`App is listening on port: ${port}`);
-  console.log(`Configured base path: ${basePath}`);
+  console.log(`App configuration:`);
+  console.log({
+    PORT: port,
+    STORAGE_BASE_PATH: apiBasePath,
+    READ_FILE_BASE_URL: readFileBaseUrl,
+    FILE_SIZE_LIMIT: fileSizeLimit
+  });
 });
 
 /**
  * GET <storage base path>/v1/status
  * Simple status API to quickly check if your service is up and running.
  */
-app.get(`/${basePath}/v1/status`, (request: Request, response: Response) => {
+app.get(`/${apiBasePath}/v1/status`, (request: Request, response: Response) => {
   response.status(StatusCodes.OK).json({
     name: 'Network Update Reference Storage Service',
     status: 'Running'
@@ -35,7 +44,7 @@ app.get(`/${basePath}/v1/status`, (request: Request, response: Response) => {
  *   featureId={id} -- Required
  * Accepts: image/*
  */
-app.post(`/${basePath}/v1/files`, async (request: Request, response: Response) => {
+app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response) => {
   console.log('Received save file request');
 
   try {
@@ -109,15 +118,43 @@ app.post(`/${basePath}/v1/files`, async (request: Request, response: Response) =
     await fs.promises.writeFile(filename, rawFile);
     console.log(`File saved to ${filename}`);
 
+    // convert save location to accessible url
+
+    const fileUrl = `${readFileBaseUrl}/${apiBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
+    console.log({fileUrl});
+
     // Return url as response
     response.status(StatusCodes.CREATED)
     .json({
-      filePath: `${filename}`
+      filePath: `${fileUrl}`
     });
 
   } catch (e) {
     response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalServerError(e.message));
   }
+});
+
+/**
+ * GET <storage base path>/v1/files?filePath=<filePath>
+ */
+app.get(`/${apiBasePath}/v1/files`, async (request: Request, response: Response) => {
+
+  // Validate query params
+  const queryParams = request.query;
+
+  if (queryParams === undefined) {
+    return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('Required query params: filePath'));
+  }
+
+  const filePathQueryParam = queryParams.filePath;
+  if (filePathQueryParam === undefined || !isString(filePathQueryParam) || (filePathQueryParam as string).trim() === '') {
+    return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('filePath is required query param'));
+  }
+  const filePath = filePathQueryParam as string;
+
+  console.log({filePath});
+
+  response.status(StatusCodes.OK).download(filePath);
 });
 
 function isString(value): boolean {
