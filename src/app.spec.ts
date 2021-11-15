@@ -6,11 +6,11 @@ import fs from 'fs';
 
 describe('Storage service API tests', () => {
 
-  const baseUrl = '/nu-storage';
+  const apiBaseUrl = '/nu-storage';
 
   describe('Status API', () => {
     it('should be able to return the API status', async () => {
-      const response = await request(app).get(`${baseUrl}/v1/status`);
+      const response = await request(app).get(`${apiBaseUrl}/v1/status`);
       expect(response.status).to.equal(StatusCodes.OK);
     });
   });
@@ -44,14 +44,14 @@ describe('Storage service API tests', () => {
 
     badRequestQueryParams.forEach((queryObj) => {
       it(`should return a Bad Request Error if ${queryObj.testMessage}`, async () => {
-        const response = await request(app).post(`${baseUrl}/v1/files`).query(queryObj.query);
+        const response = await request(app).post(`${apiBaseUrl}/v1/files`).query(queryObj.query);
         expect(response.status).to.equal(StatusCodes.BAD_REQUEST);
       });
     });
 
     it('should return a Bad Request Error if the Content-Type unset', async () => {
       const buff = Buffer.alloc(10)
-      const response = await request(app).post(`${baseUrl}/v1/files`).query({
+      const response = await request(app).post(`${apiBaseUrl}/v1/files`).query({
         type: 'image',
         featureId: 'an-id'
       }).send(buff).unset('Content-Type');
@@ -61,7 +61,7 @@ describe('Storage service API tests', () => {
 
     it('should return a Bad Request Error if the Content-Type is not image/*', async () => {
       const buff = Buffer.alloc(10);
-      const response = await request(app).post(`${baseUrl}/v1/files`).query({
+      const response = await request(app).post(`${apiBaseUrl}/v1/files`).query({
         type: 'image',
         featureId: 'an-id'
       }).send(buff).set('Content-Type', 'application/json');
@@ -70,7 +70,7 @@ describe('Storage service API tests', () => {
     });
 
     it('should return a Bad Request Error if file data not attached', async () => {
-      const response = await request(app).post(`${baseUrl}/v1/files`).query({
+      const response = await request(app).post(`${apiBaseUrl}/v1/files`).query({
         type: 'image',
         featureId: 'an-id'
       }).set('Content-Type', 'image/png');
@@ -82,7 +82,7 @@ describe('Storage service API tests', () => {
       const filePath = `${__dirname}/test-files/test-file.png`;
       const fileBuffer = await fs.readFileSync(filePath);
 
-      const response = await request(app).post(`${baseUrl}/v1/files`).query({
+      const response = await request(app).post(`${apiBaseUrl}/v1/files`).query({
         type: 'image',
         featureId: 'an-id'
       }).send(fileBuffer).set('Content-Type', 'image/png');

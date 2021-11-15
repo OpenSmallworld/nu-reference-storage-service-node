@@ -87,7 +87,6 @@ app.post(`/${apiBasePath}/v1/files`, async (request: Request, response: Response
     if (rawFile === undefined || !rawFile.length) {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('No file found'));
     }
-    console.debug({rawFile});
 
     // Generate filename for image
 
