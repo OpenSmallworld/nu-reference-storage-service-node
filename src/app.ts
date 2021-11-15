@@ -10,18 +10,18 @@ import morgan from 'morgan';
 const app: Application = express();
 
 const config = {
-   port : process.env.PORT || 4000,
-   storageApiBasePath : process.env.STORAGE_API_BASE_PATH || 'nu-storage',
-   fileSizeLimit : process.env.FILE_SIZE_LIMIT || '1gb',
+  port: process.env.PORT || 4000,
+  storageApiBasePath: process.env.STORAGE_API_BASE_PATH || 'nu-storage',
+  fileSizeLimit: process.env.FILE_SIZE_LIMIT || '1gb',
   /*
    * Config specific to the demo only read file api
    */
-   storageDemoApiBasePath : process.env.STORAGE_DEMO_API_BASE_PATH || 'nu-storage-demo',
-   storageDemoBaseUrl : process.env.STORAGE_DEMO_BASE_URL || `http://localhost:4000`,
+  storageDemoApiBasePath: process.env.STORAGE_DEMO_API_BASE_PATH || 'nu-storage-demo',
+  storageDemoBaseUrl: process.env.STORAGE_DEMO_BASE_URL || `http://localhost:4000`,
   /**
    * Options are 'open', or 'attachment'.  Default is 'open'
    */
-   storageDemoDownloadType : process.env.STORAGE_DEMO_DOWNLOAD_TYPE || 'open'
+  storageDemoDownloadType: process.env.STORAGE_DEMO_DOWNLOAD_TYPE || 'open'
 }
 
 app.use(express.raw({type: 'image/*', limit: config.fileSizeLimit}));
@@ -109,28 +109,33 @@ app.post(`/${config.storageApiBasePath}/v1/files`, async (request: Request, resp
     REPLACE THIS CODE WITH YOUR PRODUCTION READY REQUIREMENTS
      */
 
-    console.debug({
-      fileDirectory: fileDirectory,
-      filename: filename,
-    });
-
     await fs.promises.writeFile(filename, rawFile);
     console.log(`File saved to ${filename}`);
 
     // convert save location to accessible url
 
     const fileUrl = `${config.storageDemoBaseUrl}/${config.storageDemoApiBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
-    console.log(`Response filePath: ${fileUrl}`);
+
+    const responseBody = {filePath: `${fileUrl}`};
+    console.log(responseBody);
 
     // Return url as response
-    response.status(StatusCodes.CREATED)
-    .json({
-      filePath: `${fileUrl}`
-    });
+    response.status(StatusCodes.CREATED).json(responseBody);
 
   } catch (e) {
     response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(internalServerError(e.message));
   }
+});
+
+/**
+ * GET <storage demo base path>/v1/status
+ * Simple status API to quickly check if your service is up and running.
+ */
+app.get(`/${config.storageDemoApiBasePath}/v1/status`, (request: Request, response: Response) => {
+  response.status(StatusCodes.OK).json({
+    name: 'Network Update Demo Storage Service for retrieving files',
+    status: 'Running'
+  });
 });
 
 /**

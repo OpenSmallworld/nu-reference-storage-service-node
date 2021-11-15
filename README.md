@@ -50,7 +50,7 @@ Optionally to run with debug options:
 
 ## APIs
 
-### Check if app is running
+### Check if storage service is running
 
 `GET <storage base path>/v1/status`
 
@@ -106,9 +106,15 @@ For example, http://localhost:4000/nu-storage/v1/files?type=image&featureId=xxxx
 | `errors` | One or more descriptive messages about the error which occurred | string array |
 
 
+### Check if demo only read file service is running
+
+`GET <storage demo base path>/v1/status`
+
+For example, http://localhost:4000/nu-storage-demo/v1/status
+
 ### Read a file
 
-`GET <storage read demo base path>/v1/files?filePath=<url encoded filepath>`
+`GET <storage demo base path>/v1/files?filePath=<url encoded filepath>`
 
 For example, http://localhost:4000/nu-storage-demo/v1/files?filePath=%2Fnu-reference-storage-service-node%2Fsrc%2Fimage%2F333-ff36f800-4660-11ec-b840-4f0ea6969635.png
 
@@ -116,9 +122,8 @@ For example, http://localhost:4000/nu-storage-demo/v1/files?filePath=%2Fnu-refer
 
 | Library | License  | Url |
 | ------- | -------- | --- |
-| audit-ci |  |  |
-| express |  |  |
-| http-status-codes |  |  |
-| mime-types |  |  |
-| morgan |  |  |
-| uuid |  |  |
+| express | MIT | https://github.com/expressjs/express/blob/master/LICENSE |
+| http-status-codes | MIT | https://github.com/prettymuchbryce/http-status-codes/blob/master/LICENSE |
+| mime-types | MIT | https://github.com/jshttp/mime-types/blob/master/LICENSE |
+| morgan | MIT | https://github.com/expressjs/morgan/blob/master/LICENSE |
+| uuid | MIT | https://github.com/uuidjs/uuid/blob/main/LICENSE.md |
