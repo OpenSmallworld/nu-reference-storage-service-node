@@ -1,5 +1,7 @@
 # Network Update Reference Storage Service - Node.js
 
+> **_WARNING:_**  It is critical to note that the Reference Storage Service is not production ready code.  It is the simplest working demo we could provide.  It uses temporary container storage (the data is lost anytime the container is restarted) and does not do any security validation or virus scanning of file content itself.  The details of a production implementation are the sole responsibility of the customer implementing and deploying the custom storage solution.
+
 Example storage service with but Node.js, Express, and TypeScript.
 
 ## Build
