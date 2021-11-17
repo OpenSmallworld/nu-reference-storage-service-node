@@ -36,7 +36,7 @@ To start the app with hot reloading:
 | `PORT` | Port the Reference Storage Service is accessible on | 4000 |
 | `STORAGE_SERVICE_API_BASE_PATH` | Base path which prefixes all urls. | nu-storage |
 | `FILE_SIZE_LIMIT` | Max size for saving a single file. | 1gb |
-| `STORAGE_DEMO_API_BASE_PATH` | | nu-storage-demo |
+| `STORAGE_DEMO_API_BASE_PATH` | Base path which prefixes the demo only read file endpoint. | nu-storage-demo |
 | `STORAGE_DEMO_BASE_URL` | Host + port of the demo read files endpoint. | http://localhost:4000 |
 | `STORAGE_DEMO_DOWNLOAD_TYPE` | Download options when reading files.  For demo purposes, you can open in the browser (with the default 'open' option), or download as an attachment (by overriding with 'attachment') | open |
 
