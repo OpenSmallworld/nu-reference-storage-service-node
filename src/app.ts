@@ -33,7 +33,7 @@ app.listen(config.port, () => {
 });
 
 /**
- * GET <storage base path>/v1/status
+ * GET /nu-storage/v1/status
  * Simple status API to quickly check if your service is up and running.
  */
 app.get(`/${config.storageApiBasePath}/v1/status`, (request: Request, response: Response) => {
@@ -44,7 +44,7 @@ app.get(`/${config.storageApiBasePath}/v1/status`, (request: Request, response: 
 });
 
 /**
- * POST <storage base path>/v1/files
+ * POST /nu-storage/v1/files
  * Query Params:
  *   type=image -- Required
  *   featureId={id} -- Required
@@ -128,7 +128,7 @@ app.post(`/${config.storageApiBasePath}/v1/files`, async (request: Request, resp
 });
 
 /**
- * GET <storage demo base path>/v1/status
+ * GET /nu-storage-demo/v1/status
  * Simple status API to quickly check if your service is up and running.
  */
 app.get(`/${config.storageDemoApiBasePath}/v1/status`, (request: Request, response: Response) => {
@@ -139,7 +139,9 @@ app.get(`/${config.storageDemoApiBasePath}/v1/status`, (request: Request, respon
 });
 
 /**
- * GET <read storage demo base path>/v1/files?filePath=<filePath>
+ * GET /nu-storage-demo//v1/files?filePath=<filePath>
+ * Query Params:
+ *   - filePath: path of file (required)
  */
 app.get(`/${config.storageDemoApiBasePath}/v1/files`, async (request: Request, response: Response) => {
 
@@ -156,6 +158,12 @@ app.get(`/${config.storageDemoApiBasePath}/v1/files`, async (request: Request, r
   }
   const filePath = filePathQueryParam as string;
 
+  // validate file exists
+
+  if (!fs.existsSync(filePath)) {
+    return response.status(StatusCodes.NOT_FOUND).json(notFoundError(`Image with path '${filePath}' does not exist`));
+  }
+
   if (config.storageDemoDownloadType && config.storageDemoDownloadType.toLowerCase() === 'attachment') {
     response.status(StatusCodes.OK).download(filePath);
   } else {
@@ -169,17 +177,22 @@ function isString(value): boolean {
 }
 
 function internalServerError(message: string): ErrorResponseDto {
-  return {
-    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    errors: [message],
-  };
+  return error(StatusCodes.INTERNAL_SERVER_ERROR, message);
 }
 
 function badRequestError(message: string): ErrorResponseDto {
+  return error(StatusCodes.BAD_REQUEST, message);
+}
+
+function notFoundError(message: string): ErrorResponseDto {
+  return error(StatusCodes.NOT_FOUND, message);
+}
+
+function error(statusCode: number, message: string): ErrorResponseDto {
   return {
-    statusCode: StatusCodes.BAD_REQUEST,
-    errors: [message],
-  };
+    statusCode,
+    errors: [message]
+  }
 }
 
 export default app;
