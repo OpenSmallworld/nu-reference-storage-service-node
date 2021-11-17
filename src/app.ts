@@ -11,7 +11,7 @@ const app: Application = express();
 
 const config = {
   port: process.env.PORT || 4000,
-  storageApiBasePath: process.env.STORAGE_API_BASE_PATH || 'nu-storage',
+  storageServiceApiBasePath: process.env.STORAGE_SERVICE_API_BASE_PATH || 'nu-storage',
   fileSizeLimit: process.env.FILE_SIZE_LIMIT || '1gb',
   /*
    * Config specific to the demo only read file api
@@ -36,7 +36,7 @@ app.listen(config.port, () => {
  * GET /nu-storage/v1/status
  * Simple status API to quickly check if your service is up and running.
  */
-app.get(`/${config.storageApiBasePath}/v1/status`, (request: Request, response: Response) => {
+app.get(`/${config.storageServiceApiBasePath}/v1/status`, (request: Request, response: Response) => {
   response.status(StatusCodes.OK).json({
     name: 'Network Update Reference Storage Service',
     status: 'Running'
@@ -50,7 +50,7 @@ app.get(`/${config.storageApiBasePath}/v1/status`, (request: Request, response: 
  *   featureId={id} -- Required
  * Accepts: image/*
  */
-app.post(`/${config.storageApiBasePath}/v1/files`, async (request: Request, response: Response) => {
+app.post(`/${config.storageServiceApiBasePath}/v1/files`, async (request: Request, response: Response) => {
   try {
     // Validate query params
     const queryParams = request.query;

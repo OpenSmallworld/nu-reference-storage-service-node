@@ -32,11 +32,11 @@ To start the app with hot reloading:
 | Variable | Description | Default Value |
 | ----------- | ----------- | ----------- |
 | `PORT` | Port the Reference Storage Service is accessible on | 4000 |
-| `STORAGE_API_BASE_PATH` | Base path which prefixes all urls. | nu-storage |
+| `STORAGE_SERVICE_API_BASE_PATH` | Base path which prefixes all urls. | nu-storage |
 | `FILE_SIZE_LIMIT` | Max size for saving a single file. | 1gb |
 | `STORAGE_DEMO_API_BASE_PATH` | | nu-storage-demo |
 | `STORAGE_DEMO_BASE_URL` | Host + port of the demo read files endpoint. | http://localhost:4000 |
-| `STORAGE_DEMO_DOWNLOAD_TYPE` | Download options when reading files.  For demo purposes, you can open in the browser (with the default 'open' option ), or download as an attachment (by overriding with 'attachment') | open |
+| `STORAGE_DEMO_DOWNLOAD_TYPE` | Download options when reading files.  For demo purposes, you can open in the browser (with the default 'open' option), or download as an attachment (by overriding with 'attachment') | open |
 
 By default, app runs with a path of `http://localhost:4000/nu-storage`
 
@@ -46,11 +46,11 @@ To enable debug logging, set the following env var prior to running the app.
 
 Optionally to run with debug options:
 
-`export DEBUG="express:* node index.js"`
+`export DEBUG=express:*`
 
 ## APIs
 
-### Check if storage service is running
+### (FOR DEMO PURPOSES ONLY!!!) Check if storage service is running
 
 `GET <storage base path>/v1/status`
 
@@ -92,7 +92,6 @@ For example, http://localhost:4000/nu-storage/v1/files?type=image&featureId=xxxx
 ```json
 {
   "statusCode": "number",
-  "errorCode": "string",
   "errors": [
     "string"
   ]
@@ -102,21 +101,54 @@ For example, http://localhost:4000/nu-storage/v1/files?type=image&featureId=xxxx
 | Error Response Field | Description  | Type |
 | ----------- | ----------- | ----------- |
 | `statusCode` | The HTTP status code | number |
-| `errorCode` | Optional custom error code | string |
 | `errors` | One or more descriptive messages about the error which occurred | string array |
 
 
-### Check if demo only read file service is running
+### (FOR DEMO PURPOSES ONLY!!!) Check if demo only read file service is running
 
 `GET <storage demo base path>/v1/status`
 
 For example, http://localhost:4000/nu-storage-demo/v1/status
 
-### Read a file
+### (FOR DEMO PURPOSES ONLY!!!) Read a file
 
 `GET <storage demo base path>/v1/files?filePath=<url encoded filepath>`
 
 For example, http://localhost:4000/nu-storage-demo/v1/files?filePath=%2Fnu-reference-storage-service-node%2Fsrc%2Fimage%2F333-ff36f800-4660-11ec-b840-4f0ea6969635.png
+
+#### Query Params
+
+| Query Param | Description | Required |
+| ----------- | ----------- | ----------- |
+| `filePath` | Path of where file is stored within image | Yes |
+
+#### Response Statuses
+
+| HTTP Status | Description |
+| ----------- | ----------- |
+| `200 Created` | If file returned successfully |
+| `400 Bad Request` | If any part of the request is invalid, for example if the query params are missing |
+| `404 Not Found` | If requested file does not exist |
+| `500 Internal Server Error` | Unexpected exception occurred |
+
+#### Response Body
+
+Produces: image/*
+Raw contents of file.
+
+```json
+{
+  "statusCode": "number",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+| Error Response Field | Description  | Type |
+| ----------- | ----------- | ----------- |
+| `statusCode` | The HTTP status code | number |
+| `errors` | One or more descriptive messages about the error which occurred | string array |
 
 ## OSS Notice
 
