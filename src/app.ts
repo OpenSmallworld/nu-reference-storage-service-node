@@ -35,6 +35,8 @@ app.listen(config.port, () => {
 /**
  * GET /nu-storage/v1/status
  * Simple status API to quickly check if your service is up and running.
+ *
+ * THIS IS FOR DEV PURPOSES ONLY, YOU ARE NOT REQUIRED TO IMPLEMENT THIS API
  */
 app.get(`/${config.storageServiceApiBasePath}/v1/status`, (request: Request, response: Response) => {
   response.status(StatusCodes.OK).json({
@@ -49,10 +51,14 @@ app.get(`/${config.storageServiceApiBasePath}/v1/status`, (request: Request, res
  *   type=image -- Required
  *   featureId={id} -- Required
  * Accepts: image/*
+ *
+ * THIS IS THE API YOU ARE REQUIRED TO IMPLEMENT
  */
 app.post(`/${config.storageServiceApiBasePath}/v1/files`, async (request: Request, response: Response) => {
   try {
-    // Validate query params
+
+    // 1 - Validate query params
+
     const queryParams = request.query;
 
     if (queryParams === undefined) {
@@ -73,7 +79,7 @@ app.post(`/${config.storageServiceApiBasePath}/v1/files`, async (request: Reques
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('featureId is required query param'));
     }
 
-    // Validate the Content-Type
+    // 2 - Validate the Content-Type
 
     const contentType = request.header('Content-Type');
     if (contentType === undefined) {
@@ -84,14 +90,14 @@ app.post(`/${config.storageServiceApiBasePath}/v1/files`, async (request: Reques
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError(`Content-Type '${contentType}' not supported.  Supported content types: image/*`))
     }
 
-    // Validate there is image data
+    // 3 - Validate there is image data
 
     const rawFile: Buffer = request.body;
     if (rawFile === undefined || !rawFile.length) {
       return response.status(StatusCodes.BAD_REQUEST).json(badRequestError('No file found'));
     }
 
-    // Generate filename for image
+    // 4 - Generate filename for image
 
     const fileDirectory = `${__dirname}/${typeQueryParam}`;
 
@@ -101,7 +107,7 @@ app.post(`/${config.storageServiceApiBasePath}/v1/files`, async (request: Reques
 
     const filename = `${fileDirectory}/${featureIdQueryParam}-${v1()}.${mime.extension(contentType)}`;
 
-    // Write image to file
+    // 5 - Save image to a location of your choice
 
     /*
     THIS IS NOT PRODUCTION READY CODE.
@@ -112,14 +118,16 @@ app.post(`/${config.storageServiceApiBasePath}/v1/files`, async (request: Reques
     await fs.promises.writeFile(filename, rawFile);
     console.log(`File saved to ${filename}`);
 
-    // convert save location to accessible url
+    // 6 - Build url for externally available location where image can be accessed.
+    // This is the reference string which will be sent to GSS.
 
     const fileUrl = `${config.storageDemoBaseUrl}/${config.storageDemoApiBasePath}/v1/files?${querystring.stringify({filePath: filename})}`;
+
+    // 7 - Return url as the 'filePath' in the response
 
     const responseBody = {filePath: `${fileUrl}`};
     console.log(responseBody);
 
-    // Return url as response
     response.status(StatusCodes.CREATED).json(responseBody);
 
   } catch (e) {
@@ -130,6 +138,8 @@ app.post(`/${config.storageServiceApiBasePath}/v1/files`, async (request: Reques
 /**
  * GET /nu-storage-demo/v1/status
  * Simple status API to quickly check if your service is up and running.
+ *
+ * THIS IS FOR DEMO PURPOSES ONLY, YOU ARE NOT REQUIRED TO IMPLEMENT THIS API
  */
 app.get(`/${config.storageDemoApiBasePath}/v1/status`, (request: Request, response: Response) => {
   response.status(StatusCodes.OK).json({
@@ -142,6 +152,8 @@ app.get(`/${config.storageDemoApiBasePath}/v1/status`, (request: Request, respon
  * GET /nu-storage-demo//v1/files?filePath=<filePath>
  * Query Params:
  *   - filePath: path of file (required)
+ *
+ * THIS IS FOR DEMO PURPOSES ONLY, YOU ARE NOT REQUIRED TO IMPLEMENT THIS API
  */
 app.get(`/${config.storageDemoApiBasePath}/v1/files`, async (request: Request, response: Response) => {
 
