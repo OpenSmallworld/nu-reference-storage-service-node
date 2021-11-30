@@ -2,9 +2,11 @@
 
 > **_WARNING:_**  It is critical to note that the Reference Storage Service is not production ready code.  It is the simplest working demo we could provide.  It uses temporary container storage (the data is lost anytime the container is restarted) and does not do any security validation or virus scanning of file content itself.  The details of a production implementation are the sole responsibility of the customer implementing and deploying the custom storage solution.
 
-Example storage service with but Node.js, Express, and TypeScript.
+Example storage service with Node.js, Express, and TypeScript.
 
 ## Build
+
+> **_NOTE:_** There is a pre-built image available for use by GE employees at https://registry.gear.ge.com/repositories/pwr-smallworld/nu-reference-storage-service-node
 
 `npm ci`
 
