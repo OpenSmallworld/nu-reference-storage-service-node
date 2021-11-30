@@ -3,8 +3,6 @@
 npmBuildPipeline({
   projectName = 'nu-reference-storage-service-node'
   nodeVersion = '16.13.0'
-  targetDockerRegistry = 'dtr.predix.io'
-  targetDockerRegistryCredentials = 'predix_dtr_creds'
   dockerImageName = 'nu-reference-storage-service-node'
   secondaryDockerRegistryCredentials = 'grid_arti_dtr'
   secondaryDockerRegistry = 'dig-grid-artifactory.apps.ge.com'
