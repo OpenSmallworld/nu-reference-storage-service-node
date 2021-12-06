@@ -6,7 +6,7 @@ Example storage service with Node.js, Express, and TypeScript.
 
 ## Build
 
-> **_NOTE:_** There is a pre-built image available for use by GE employees at https://registry.gear.ge.com/repositories/pwr-smallworld/nu-reference-storage-service-node.  For demos you should check the repo for the most recent `SW5210-DEV-*` version to pull. 
+> **_NOTE:_** There is a pre-built image available for use by GE employees at https://registry.gear.ge.com/repositories/pwr-smallworld/nu-reference-storage-service-node.  For demos you should check the repo for the most recent `SW5210-DEV-*` version to pull or build the image yourself.
 
 `npm ci`
 
@@ -54,13 +54,13 @@ Optionally to run with debug options:
 
 ## APIs
 
-### (FOR DEMO PURPOSES ONLY!!!) Check if storage service is running
+### Check if storage service is running (FOR DEMO PURPOSES ONLY!!!)
 
 `GET <storage base path>/v1/status`
 
 For example, http://localhost:4000/nu-storage/v1/status
 
-### Save a file
+### Save a file (the API you must implement)
 
 `POST <storage base path>/v1/files?type=image&featureId={id}`
 
@@ -108,13 +108,13 @@ For example, http://localhost:4000/nu-storage/v1/files?type=image&featureId=xxxx
 | `errors` | One or more descriptive messages about the error which occurred | string array |
 
 
-### (FOR DEMO PURPOSES ONLY!!!) Check if demo only read file service is running
+### Check if read file service is running (FOR DEMO PURPOSES ONLY!!!)
 
 `GET <storage demo base path>/v1/status`
 
 For example, http://localhost:4000/nu-storage-demo/v1/status
 
-### (FOR DEMO PURPOSES ONLY!!!) Read a file
+### Read a file (FOR DEMO PURPOSES ONLY!!!)
 
 `GET <storage demo base path>/v1/files?filePath=<url encoded filepath>`
 
