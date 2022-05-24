@@ -6,8 +6,6 @@ Example storage service with Node.js, Express, and TypeScript.
 
 ## Build
 
-> **_NOTE:_** There is a pre-built image available for use by GE employees at https://registry.gear.ge.com/repositories/pwr-smallworld/nu-reference-storage-service-node.  For demos you should check the repo for the most recent `SW5210-DEV-*` version to pull or build the image yourself.
-
 `npm ci`
 
 then
