@@ -10,7 +10,7 @@ npmBuildPipeline({
   secondaryDockerRegistry = 'dig-grid-artifactory.apps.ge.com'
   secondaryDockerRepository = 'smallworld-docker-snapshot'
   secondaryDockerImageName = 'nu-reference-storage-service-node'
-  secondaryDockerImageTag = 'SW530-DEV'
+  secondaryDockerImageTag = 'SW531-DEV'
   crossPublishDockerImage = true
   securityAudit = false
   sonarScan = false
