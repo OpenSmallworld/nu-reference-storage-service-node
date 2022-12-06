@@ -2,7 +2,7 @@
 @Library('sfc-build-pipeline@node16') _
 npmBuildPipeline({
   projectName = 'nu-reference-storage-service-node'
-  nodeVersion = '16.17.0'
+  nodeVersion = '16.18.1'
   dockerImageName = 'nu-reference-storage-service-node'
   securityAudit = false
   sonarScan = false
