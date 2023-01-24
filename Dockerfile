@@ -1,5 +1,5 @@
 ARG NODE_IMAGE
-FROM ${NODE_IMAGE}-bullseye-slim
+FROM dig-grid-artifactory.apps.ge.com/smallworld-docker-snapshot/${NODE_IMAGE}-bullseye-slim
 
 COPY . .
 
