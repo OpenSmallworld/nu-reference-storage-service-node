@@ -1,8 +1,8 @@
 #!/usr/bin/env groovy
-@Library('sfc-build-pipeline@node16') _
+@Library('sfc-build-pipeline@SW532') _
 npmBuildPipeline({
   projectName = 'nu-reference-storage-service-node'
-  nodeVersion = '16.18.1'
+  nodeVersion = '18.16.0'
   dockerImageName = 'nu-reference-storage-service-node'
   securityAudit = false
   sonarScan = false
