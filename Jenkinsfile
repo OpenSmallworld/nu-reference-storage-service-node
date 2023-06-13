@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-@Library('sfc-build-pipeline@SW532') _
+@Library('sfc-build-pipeline@SW533') _
 npmBuildPipeline({
   projectName = 'nu-reference-storage-service-node'
   nodeVersion = '18.16.0'
