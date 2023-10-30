@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-@Library('sfc-build-pipeline@node16') _
+@Library('sfc-build-pipeline@SW533') _
 
 securityScanPipeline({
   repoName = 'nu-reference-storage-service-node'
